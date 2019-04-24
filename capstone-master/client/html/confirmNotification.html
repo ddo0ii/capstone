@@ -1,0 +1,66 @@
+<!-- 
+손님용
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width", initial-scale="1">
+    <meta charset="utf-8">
+    <title>Push Test</title>
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css"> 
+</head>
+<body>
+    <style>
+        .image{
+            position : relative;
+            height: 726px;
+            background: url(../../images/darkcafeimage.jpg) no-repeat center center;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: calc(100vh);
+            min-height: 200px;
+        }
+        .image.container{
+        position:absolute;
+        color:white;
+        }
+        .hello{
+        color:white;
+        font-size:3rem;
+        text-align: center;
+        }
+        .btn-panel{
+            text-align: center;
+        }
+        #confirm-btn{
+            width: 80vw;
+            height: 20vh;
+            border-radius: 15px;
+            border: 1px;
+            text-shadow: 1px;
+            text-align: center;
+            font-size: 2em;
+        }
+    </style>
+    <div class="image"`>
+        <br><br><br>
+        <div class="container">
+            <div class="starter-template">
+                <h1 class = "hello">푸시 알림 확인</h1>
+            </div>
+            <p class="lead" style="color: white; font-size: 2em; text-align: center;">아래 [알림 받음] 버튼을 클릭해서 카운터에 알림 수신을 알려주세요.</p>
+        </div>
+        <div class="btn-panel">
+            <button id="confirm-btn">알림 받음</button>
+        </div>    
+    </div>
+        
+    <script src="../js/confirm.js"></script>
+    <script src="../../bootstrap/js/jquery-3.3.1.min.js"></script>
+    <script src="../../bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+**한 일
+1
+index.html 생성
+
+2
+navbar 생성 후 카페랑 이벤트 파트 연결
+
+3
+로그인 시스템과 이벤트 파트 연결(로그인 안하면 event control 페이지 못드감)
+
+4
+노드서버 subscription.js를 소정이식으로 변경.
+*세부*
+client/cafe/js/main.js에서 ajax로 날릴때,
+dupSubSql문은 굳이 날릴 필요 없을 듯. CafeDB든 EventDB든 둘 중 하나의 중복만 체크하면 되니까
+ajax 데이터 속성 중 addDBSql->addEventDBSql, addDBValue->addEventDBValue로 변경
+ajax 데이터 속성 중 addCafeDBSql, addCafeDBValue 추가
+unsubscribeUser() 함수에서도 ajax 부분 변경(원리는 add할 때랑 유사)
+
+5
+추가/삭제 CAFE랑 EVENT DB랑 연동
+*cafe쪽 control.html에서 지우면 eventdb에서도 지워짐
+
+6
+CAFE랑 EVENT에서 푸시 동작하게, subscription.js에서 findClient함수 변경.
+태그로 구분할거야. 각 control.html에서 ajax로 날릴 때, tag를 attribute로 추가.
+
+7
+payload를 string으로 넘겨서 parsing해서 사용.
+
+*중간정리*
+구독신청 페이지는 client/cafe/html/vibrationbell.html로 일단 한다.
+이와 연결된 main.js에서 ajax의 데이터 형태를 확인한다. (추가/삭제 두 개 다 확인)
+
+노드 서버의 subscription.js에서 관련된 작업을 진행한다. (add와 del에 관련된 것들만)
+
+CAFE 혹은 EVENT contorl.html에서 푸시를 할 경우 ajax안에 tag 속성을 달았음을 확인하자.
+
+노드 서버의 subscription.js에서 findClient 함수를 보면 태그에 따라 가짓수가 나뉘는 것을 확인.
+이어서 push2Client함수에서는 태그를 숫자로 전달하여, push2Client함수에서는 이 태그를 보고
+페이로드를 결정함. 페이로드는 String 타입으로 전달함.
+
+푸시를 받는 쪽의 서비스워커 파일은 client/cafe/html/sw-client.js를 참고한다.
+이벤트리스너 중 push를 처리하는 쪽에서 페이로드를 parsing하여 사용한다. 
+
+
+8
+이벤트 푸시 넘긴 payload 중 idx 사용해서 이벤트 DB에서 관련 이벤트 내용 출력
+client/cafe/sw-client.js에서 push 이벤트리스너 부분에 option 변수 안에 tag랑 idx 값을 줌.
+같은 파일 안에 notificationclick 이벤트리스너 안에서 분기 나누고, idx를 get방식으로
+showEvent.html로 넘김.
+showEvent.html에서 php로 db연결하고 꺼내다가 쓰면 된다.
+
+9
+구독자 숫자 표시
+
+10
+admin/cafe/html/control.html 버튼 구현 및 수정
+[신규]
+전체 삭제: cafeDB eventDB에서 구독자 전체 삭제
+상태 초기화: '수신 확인'상태를 '수신 대기'로 변경
+[변경]
+정리하기: 최근 알림을 수신한 시각이 입력한 시각보다 이전 인구독자들은 모두 삭제(arrange.php&arrange_ok.php 추가)
+[삭제]
+마감하기: DB idx 초기화 버튼이었으나 일단 불필요해 보여서 없앰.
+
+
+[참고]
+이미지 폴더 위치 변경: 각 폴더에서 webroot로 변경할 것.(아직안함)
+구독자 게시판 페이지 넘어가는 기능 추가할 것.
+구독자 관리 중 내용 커스터마이징도 해볼까?!
+로그아웃도 메뉴에 넣어버려야지.
+시간나면 푸시에 이미지 넣는거 해봐야지.
+이벤트리스트도 도메인별로 구분.

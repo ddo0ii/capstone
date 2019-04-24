@@ -1,0 +1,295 @@
+<?php
+    session_start();
+    include_once "../process/connectDB.php"; 
+    
+    $bno = 1;
+
+    if(isset($_SESSION['auth'])){
+        echo "<script>console.log('인증된 ID: ".$_SESSION['auth']."');</script>";
+        $curUser = $_SESSION['auth'];
+        $curDomain = $_SESSION['domain'];
+    }else{
+        echo "<script>alert('잘못된 접근입니다. 로그인해주세요.:)')</script>";
+        header("Refresh:0; url='login.html'");
+    }
+?>
+
+<!DOCTYPE html>
+<html lang ="ko">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>Control Page</title>
+  <script src="../../../bootstrap/js/jquery-3.3.1.min.js"></script>
+  <link rel = "stylesheet" href="../../../bootstrap/css/bootstrap.css">  
+  <script type="text/javascript" charset="utf-8" >
+        function sendPush(idx, reception) {
+            var confirmPush = confirm('해당 고객에게 푸시 알림을 보내시겠습니까?');
+            if (confirmPush) {
+                
+                if(reception == "수신 확인"){
+                    alert('수신 확인된 고객에게는 푸시 알림을 보낼 수 없습니다.');
+                }
+                else{
+                    $.ajax({
+                            type: 'POST',
+                            url: 'https://hdarts.kr:3000/process/sendPush',
+                            async: true,
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                "tag": 'cafe',
+                                "idx": idx
+                            }),
+                            dataType:'json',
+                            processData: true,
+                            success: function(data){
+                                alert("푸쉬 알림을 전송했습니다.");
+                            }
+                     });
+                }
+            }
+            return;
+        }    
+  </script>
+</head>
+<body>
+    <style>
+        body {
+            margin: 0;
+        }
+        .image{
+            position : relative;
+            height: 726px;
+            background: url(../../../images/darkcafeimage.jpg) no-repeat center center;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: calc(100vh);
+            min-height: 200px;
+        }
+        .image.container{
+        position:absolute;
+        color:white;
+        }
+        .hello{
+        color:white;
+        font-size:3rem;
+        text-align: center;
+        }
+        .event_area{
+        position : absolute;
+        color : white;
+        }
+        .text-center{
+            text-align: center;
+        }
+        .initbtn{
+            width: 100px;
+            height: 50px;
+            background-color: burlywood;
+            color: white;
+            font: bold 15px arial, sans-serif;
+            border-radius: 15px;
+            margin-left: 8px;
+        }
+        .curUser{
+            color: white;
+            font-size: 1.5rem;
+            text-align: left;
+            margin: 0;
+        }
+        
+        /* The switch - the box around the slider */
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 60px;
+          height: 34px;
+          vertical-align:middle;
+        }
+        /* Hide default HTML checkbox */
+        .switch input {display:none;}
+        /* The slider */
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(26px);
+        }
+    </style>
+
+    <!-- navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="control.html">Subscriber</a></li>
+            <li><a href="../../event/html/control.html">Event</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- /navbar -->
+    
+<div class="image">
+    <div class="container">
+        <div class="starter-template"  style="margin-top: 10%">
+            <p class="curUser">관리자ID '<?= $_SESSION['auth'] ?>' 가 접속 중입니다.</p>
+            <p class="curUser">관리자의 도메인 주소는 '<?= $_SESSION['domain'] ?>' 입니다.</p>
+            <h1 class = "hello">구독자 관리 페이지</h1>
+            <div style="display: inline-block;">
+                <label class="switch">
+                    <input type="checkbox" id="regAdmin-btn" <?php 
+                          $admin = $dbConnect->query("SELECT * FROM AdminCafe WHERE id='$curUser' AND subscription IS NOT NULL");
+                          $row_cnt=$admin->num_rows;    
+
+                          if($row_cnt > 0){
+                              echo 'checked';
+                          } ?> 
+                      />
+                    <span class="slider round"></span>
+                 </label>
+                <p style="font-size: 1em; color: white;">관리자등록</p>
+            </div>
+            <div style="display: inline-block; float: right">
+                <form id="initform" method="POST" action="../process/logout.php">
+                    <input class="initbtn" type="submit" value="로그아웃">
+                </form>
+            </div>
+            <div style="display: inline-block; float: right">
+                <form id="initform" method="POST" action="../process/init.php">
+                    <input class="initbtn" type="submit" value="상태 초기화">
+                </form>
+            </div>
+            <div style="display: inline-block; float: right">
+                <form id="arrangeform" method="POST" action="../process/deleteAll.php">
+                    <input class="initbtn" type="submit" value="전체 삭제">
+                </form>
+            </div>
+            <div style="display: inline-block; float: right">
+                <form id="arrangeform" method="POST" action="../process/arrange.php">
+                    <input class="initbtn" type="submit" value="정리하기">
+                </form>
+            </div>
+        </div>
+    </div><!-- /.container -->
+
+        <!--event table-->
+        <div class ="container">
+        <div class = "jumbotron">
+        <div id="event_area">
+            <div class="container">
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th width="5%">Num</th>
+                        <th width="15%">Nickname</th>
+                        <th width="15%">Time</th>
+                        <th width="15%">State</th>
+                        <th width="15%">Action</th>
+                    </tr>
+                </thead>
+                <?php
+                        $rlt = $dbConnect->query("SELECT * FROM Customer WHERE Customer.domain='$curDomain' ORDER BY idx asc limit 0,5");
+                        while($Customer = mysqli_fetch_array($rlt)){
+                            $nickname=$Customer["nickname"];
+                            
+                            if(strlen($nickname)>30){       
+                                $nickname=str_replace($Customer["nickname"],mb_substr($Customer["nickname"],0,30,"utf-8")."...",$Customer["nickname"]);
+                            }
+                ?>
+                <tbody>
+                    <tr>
+                      <!--<td width="5%" id="idx"><?php echo $Customer['idx']; ?></td>-->
+                      <td width="5%" id="idx"><?php echo $bno; ?></td>
+                        <td width="15%"><a href="read.php?idx=<?php echo $Customer['idx']; ?>"><?php echo $Customer['nickname']?></a></td>
+                      <td width="20%"><?php echo $Customer['time']?></td>
+                      <td width="5%"><?php echo $Customer['reception']?></td>
+                      <td width="20%" class="url">
+                          <a href="#" onclick="sendPush('<?php echo $Customer['idx']; ?>','<?php echo $Customer['reception']; ?>' )">Push</a>
+                          <br>
+                          <a href="../process/ad_edit.php?idx=<?php echo $Customer['idx']; ?>">Edit</a>
+                          <a href="../process/ad_delete.php?idx=<?php echo $Customer['idx']; ?>">Delete</a>
+                      </td>
+                    </tr>
+                </tbody>
+                <?php $bno=$bno+1;} ?>
+                <p style="font-size: 2rem">구독자 숫자는 <?= $bno-1 ?> 명 입니다.</p>
+            </table>
+            </div>
+            <div class = "text-center">
+                <ul class= "pagination">
+                    <li><a href="#" class="btn-sm">1</a></li>
+                    <li><a href="#" class="btn-sm">2</a></li>
+                    <li><a href="#" class="btn-sm">3</a></li>
+                    <li><a href="#" class="btn-sm">4</a></li>
+                    <li><a href="#" class="btn-sm">5</a></li>
+                </ul>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <p>정리하기 버튼: (현)수신 확인된 객체 지움 -> (수)오래도록 수신대기상태 객체 지움</p>
+    <p>상태 초기화 버튼(현재 마감버튼): (현)DB idx번호 초기화 -> (수)state 상태를 수신 대기로 초기화</p>
+    <p>구독자 DB idx도 초기화하긴 해야하는데...</p>
+    <!-- footer -->
+    <footer style="background-color: #353C46 ; color: white">
+        <div class="container">
+            <br>
+            <div class="row">
+                <div class="col-sm-12" style="text-align: center;">
+                    <p>Copyright &copy; 2018</p>
+                    <p>ChungUlLim :: SeeSeon :: HGU</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- /footer -->
+
+    <!-- include javascript -->
+    <script type="text/javascript">var currentUserID = '<?= $_SESSION['auth'] ?>'</script>
+    <script src="../js/control.js"></script>
+    <script src="../../../bootstrap/js/bootstrap.min.js"></script>
+
+    </body>
+</html>

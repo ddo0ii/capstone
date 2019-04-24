@@ -1,0 +1,185 @@
+<!-- 
+손님용
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width", initial-scale="1">
+    <meta charset="utf-8">
+    <title>Push Test</title>
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css"> 
+</head>
+<body>
+    <style>
+        .image{
+            position : relative;
+            height: 726px;
+            background: url(../../images/darkcafeimage.jpg) no-repeat center center;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: calc(100vh);
+            min-height: 200px;
+            padding-top: 0px;
+        }
+        .image.container{
+        position:absolute;
+        color:white;
+        }
+        .hello{
+        color:white;
+        font-size:3rem;
+        text-align: center;
+        }
+        .content p{
+            color:black;
+            margin: 5px;
+        }
+        .howtouse{
+            width:90%;
+            color: burlywood;
+            font-size: 0.6rem;
+            text-align: left;
+            background-color: white;
+            border: 3px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            margin-left: 5%;
+        }
+        .caution{
+            width:90%;
+            color: burlywood;
+            font-size: 0.6rem;
+            text-align: left;
+            background-color: white;
+            border: 3px;
+            border-radius: 5px;
+            margin-left: 5%;
+        }
+        
+        /* The switch - the box around the slider */
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 120px;
+          height: 68px;
+          vertical-align:middle;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {display:none;}
+
+        /* The slider */
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 52px;
+          width: 52px;
+          left: 8px;
+          bottom: 8px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 2px #2196F3;
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(52px);
+          -ms-transform: translateX(52px);
+          transform: translateX(52px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+
+        .slider.round:before {
+          border-radius: 50%;
+        }
+
+        p {
+          margin:0px;
+          display:inline-block;
+          font-size:2.5em;
+          font-weight:bold;
+          color: white;
+        }
+        
+        h3 {
+            color: white;
+            font-weight: bold;
+            margin:0px;
+        }
+    </style>
+    <div class="image"`>
+        <br><br><br>
+        <div class="container">
+            <div class="starter-template">
+                <h1 class = "hello">진동벨 데모</h1>
+            </div>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="push-btn">
+            <span class="slider round"></span>
+        </label>
+        <p id="b1">진동벨 OFF</p><p id="b2" style="display:none;">진동벨 ON</p>
+        
+        <!-- 주의사항 -->
+        <div class="content">
+            <h3 style="text-align: center">사용방법</h3>
+            <div class="howtouse">
+                <p>1. 진동벨을 클릭하여 ON 한다.</p>
+                <p>2. 브라우저 창을 닫고 푸시 알림을 기다린다.</p>
+            </div>
+            <h3 style="text-align: center">주의사항</h3>
+            <div class="caution">
+                <p>1. 휴대폰이 절전모드시 서비스가 원활하지 않을 수 있습니다.</p>
+                <p>2. 진동벨을 Off하시면 주문정보가 사라지며 카운터에서 재주문하셔야하니 주의하시기 바랍니다.</p>
+                <p>3. 크롬, 삼성, 오페라, 파이어폭스 웹브라우저에서 사용 가능한 서비스입니다.</p>
+            </div>
+        </div>
+
+    </div>
+        
+    <script src="../js/main.js"></script>
+    <script src="../../bootstrap/js/jquery-3.3.1.min.js"></script>
+    <script src="../../bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        var check = $("input[type='checkbox']");
+            check.click(function(){
+                var b1 = document.getElementById('b1');
+                var b2 = document.getElementById('b2');
+                if(b2.style.display === "none"){
+                    b2.style.display = "inline-block";
+                    b1.style.display = "none";
+                }else{
+                    b1.style.display = "inline-block";
+                    b2.style.display = "none";
+                }
+            });
+    </script>
+</body>
+</html>

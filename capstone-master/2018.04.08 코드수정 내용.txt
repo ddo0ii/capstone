@@ -1,0 +1,6 @@
+1. client 디렉토리에 있던 admin, event 디렉토리 삭제.
+   (admin, event내에 있던 디렉토리들을 clinet의 하위 디렉토리로 변경)
+
+2. showEvent.html구현
+
+3. 페이지 배경화면, 푸시알림시 필요한 이미지 저장된 폴더(imgaes) 하나로 통합

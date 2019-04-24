@@ -1,0 +1,114 @@
+<?php
+    include_once "../process/connectDB.php"; 
+    $idx = $_GET["idx"];
+?>
+
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+        <meta name="viewport" content="width=device-width" , initial-scale="1">
+        <meta charset="utf-8">
+        <title>Push Test</title>
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+    </head>
+
+    <body>
+        <style>
+            .image {
+                position: relative;
+                height: 726px;
+                background: url(../../images/darkcafeimage.jpg) no-repeat center center;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                height: calc(100vh);
+                min-height: 200px;
+            }
+
+            .image.container {
+                position: absolute;
+                color: white;
+            }
+
+            .hello {
+                color: white;
+                font-size: 3rem;
+                text-align: center;
+            }
+
+            .btn-panel {
+                text-align: center;
+            }
+
+            #confirm-btn {
+                width: 25vw;
+                height: 7vh;
+                text-shadow: 0.5px;
+                text-align: center;
+                font-size: 1.3em;
+                background-color: rgba(197, 195, 195, 0.904);
+            }
+
+            p {
+                margin: 0px;
+                font-size: 1.7rem;
+                text-align: center;
+                color: rgb(199, 194, 194);
+            }
+        </style>
+        <div class="image" `>
+            <br>
+            <br>
+            <br>
+            <div class="container">
+                <div class="jumbotron">
+                    <br>
+                    <?php
+            $rlt = $dbConnect->query("SELECT * FROM EventList WHERE idx = '$idx'");
+            $List = mysqli_fetch_array($rlt);   
+            ?>
+                        <table class="table table-hover">
+                            <caption>이벤트 상세정보</caption>
+                            <tbody>
+                                <tr>
+                                    <td width="10%">
+                                        제목
+                                    </td>
+                                    <td width="30%">
+                                        <?php echo $List['title']?>
+                                    </td>
+                                    <td width="10%">
+                                        마감기한
+                                    </td>
+                                    <td width="20%">
+                                        <?php echo $List['term'];?>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4">
+                                        <img src="../../admin/event/process/img/<?php echo $List['imgfile'];?>" alt="" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <?php echo $List['content']?>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                </div>
+            </div>
+        </div>
+
+        <!--<script src="../js/confirm.js"></script>-->
+        <script src="../../bootstrap/js/jquery-3.3.1.min.js"></script>
+        <script src="../../bootstrap/js/bootstrap.min.js"></script>
+    </body>
+
+    </html>

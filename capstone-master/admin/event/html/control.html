@@ -1,0 +1,152 @@
+<?php
+    session_start();
+    include_once "../process/connectDB.php"; 
+
+    if(isset($_SESSION['auth'])){
+        echo "<script>console.log('인증된 ID: ".$_SESSION['auth']."');</script>";
+        $curUser = $_SESSION['auth'];
+        $curDomain = $_SESSION['domain'];
+    }else{
+        echo "<script>alert('잘못된 접근입니다. 로그인해주세요.:)')</script>";
+        header("Refresh:0; url='../../cafe/html/login.html'");
+    }
+?>
+
+<!DOCTYPE html>
+<html lang="ko">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <title>Control Page</title>
+        <script src="../../../bootstrap/js/jquery-3.3.1.min.js"></script>
+        <link rel="stylesheet" href="../../../bootstrap/css/bootstrap.css">
+    </head>
+
+    <body>
+        <style>
+            body {
+                margin: 0;
+            }
+
+            .image {
+                position: relative;
+                height: 726px;
+                background: url(../../../images/darkcafeimage.jpg) no-repeat center center;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                height: calc(100vh);
+                min-height: 200px;
+            }
+
+            .image.container {
+                position: absolute;
+                color: white;
+            }
+
+            .event_area {
+                position: absolute;
+                color: white;
+            }
+
+            .text-center {
+                text-align: center;
+            }
+        </style>
+        <div class="image">
+            <br/>
+            <br/>
+            <br/>
+        <!-- navbar -->
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+              <ul class="nav navbar-nav">
+                <li><a href="../../cafe/html/control.html">Subscriber</a></li>
+                <li class="active"><a href="control.html">Event</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <!-- /navbar -->
+
+        <div class="container">
+            <div class="jumbotron">
+                <button type="button" class="btn pull-right btn-primary" onclick="location.href = '../process/ad_new.php'">+ New Event</button>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th width="15%">Title</th>
+                            <th width="20%">Content</th>
+                            <th width="10%">term</th>
+                            <th width="15%">Image</th>
+                            <th width="20%">Action</th>
+                        </tr>
+                    </thead>
+                    <?php
+                        $rlt = $dbConnect->query("SELECT * FROM EventList");
+                        while($List = mysqli_fetch_array($rlt)){
+                            $content=$List["content"];        
+                    ?>
+                    
+                    <script type="text/javascript" charset="utf-8">
+                        function sendPush(idx, title, content) {
+                            var confirmPush = confirm('푸시 알림을 보내시겠습니까?');
+                            if (confirmPush) {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: 'https://hdarts.kr:3000/process/sendPush',
+                                    async: true,
+                                    contentType: 'application/json',
+                                    data: JSON.stringify({
+                                        "tag": "event",
+                                        "idx": idx,
+                                        "findClientSql": "SELECT subscription FROM CustomerEvent",
+                                        "title" : title,
+                                        "content" : content
+                                    }),
+                                    dataType: 'json',
+                                    processData: true,
+                                    success: function (data) {
+                                        alert("푸쉬 알림을 전송했습니다.");
+                                    }
+                                });
+                            }
+                            return;
+                        }    
+                    </script>
+                    <tbody>
+                        <tr>
+                            <td width="15%"><?php echo $List['title']?></td>
+                            <td width="20%"><?php echo $content?></td>
+                            <td width="10%"><?php echo $List['term'];?></td>
+                            <td width="15%"><img src="../process/img/<?php echo $List['imgfile'];?>" alt="" /></td>
+                            <td width="20%" class="url">
+                                <a href="#" onclick="sendPush('<?php echo $List['idx']; ?>','<?php echo $List['title']; ?>','<?php echo $List['content']; ?>')">Push</a>
+                                <br>
+                                <a href="../process/ad_edit.php?idx=<?php echo $List['idx']; ?>">Edit</a>
+                                <br>
+                                <a href="../process/ad_delete.php?idx=<?php echo $List['idx']; ?>">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <?php } ?>
+                </table>
+            </div>
+        </div>
+    </div>
+        <script src="../../../bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
